@@ -1,4 +1,4 @@
-[English](AGENTS.md) | [简体中文]
+[简体中文] | [English](AGENTS.md)
 
 # OpenResume 代理指令
 

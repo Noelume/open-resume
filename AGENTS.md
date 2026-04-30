@@ -1,4 +1,4 @@
-[English] | [简体中文](AGENTS_zh.md)
+[简体中文](AGENTS_zh.md) | [English]
 
 # OpenResume Agent Instructions
 
