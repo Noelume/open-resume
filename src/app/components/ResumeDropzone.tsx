@@ -6,7 +6,8 @@ import {
   getHasUsedAppBefore,
   saveStateToLocalStorage,
 } from "lib/redux/local-storage";
-import { type ShowForm, initialSettings } from "lib/redux/settingsSlice";
+import { type ShowForm, initialSettings, selectLanguage } from "lib/redux/settingsSlice";
+import { useAppSelector } from "lib/redux/hooks";
 import { useRouter } from "next/navigation";
 import addPdfSrc from "public/assets/add-pdf.svg";
 import Image from "next/image";
@@ -32,6 +33,7 @@ export const ResumeDropzone = ({
   const [isHoveredOnDropzone, setIsHoveredOnDropzone] = useState(false);
   const [hasNonPdfFile, setHasNonPdfFile] = useState(false);
   const router = useRouter();
+  const language = useAppSelector(selectLanguage);
 
   const hasFile = Boolean(file.name);
 
@@ -119,7 +121,7 @@ export const ResumeDropzone = ({
           <Image
             src={addPdfSrc}
             className="mx-auto h-14 w-14"
-            alt="Add pdf"
+            alt={language === 'zh' ? '添加 PDF' : 'Add PDF'}
             aria-hidden="true"
             priority
           />
@@ -132,11 +134,11 @@ export const ResumeDropzone = ({
                 !playgroundView && "text-lg font-semibold"
               )}
             >
-              Browse a pdf file or drop it here
+              {language === 'zh' ? '浏览 PDF 文件或将其拖放到此处' : 'Browse a pdf file or drop it here'}
             </p>
             <p className="flex text-sm text-gray-500">
               <LockClosedIcon className="mr-1 mt-1 h-3 w-3 text-gray-400" />
-              File data is used locally and never leaves your browser
+              {language === 'zh' ? '文件数据仅在本地使用，绝不会离开您的浏览器' : 'File data is used locally and never leaves your browser'}
             </p>
           </>
         ) : (
@@ -147,7 +149,7 @@ export const ResumeDropzone = ({
             <button
               type="button"
               className="outline-theme-blue rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-              title="Remove file"
+              title={language === 'zh' ? '移除文件' : 'Remove file'}
               onClick={onRemove}
             >
               <XMarkIcon className="h-6 w-6" />
@@ -163,7 +165,7 @@ export const ResumeDropzone = ({
                   playgroundView ? "border" : "bg-primary"
                 )}
               >
-                Browse file
+                {language === 'zh' ? '浏览文件' : 'Browse file'}
                 <input
                   type="file"
                   className="sr-only"
@@ -172,7 +174,7 @@ export const ResumeDropzone = ({
                 />
               </label>
               {hasNonPdfFile && (
-                <p className="mt-6 text-red-400">Only pdf file is supported</p>
+                <p className="mt-6 text-red-400">{language === 'zh' ? '仅支持 PDF 文件' : 'Only pdf file is supported'}</p>
               )}
             </>
           ) : (
@@ -183,12 +185,13 @@ export const ResumeDropzone = ({
                   className="btn-primary"
                   onClick={onImportClick}
                 >
-                  Import and Continue <span aria-hidden="true">→</span>
+                  {language === 'zh' ? '导入并继续' : 'Import and continue'} <span aria-hidden="true">→</span>
                 </button>
               )}
               <p className={cx(" text-gray-500", !playgroundView && "mt-6")}>
-                Note: {!playgroundView ? "Import" : "Parser"} works best on
-                single column resume
+                {language === 'zh' ? '注意：' : 'Note: '}
+                {!playgroundView ? (language === 'zh' ? '导入功能' : 'Import') : (language === 'zh' ? '解析器' : 'Parser')}
+                {language === 'zh' ? '在单列简历上效果最佳' : ' works best on single column resume'}
               </p>
             </>
           )}

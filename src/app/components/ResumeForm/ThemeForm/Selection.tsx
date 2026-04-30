@@ -7,6 +7,8 @@ import {
 } from "components/fonts/constants";
 import { getAllFontFamiliesToLoad } from "components/fonts/lib";
 import dynamic from "next/dynamic";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
 
 const Selection = ({
   selectedColor,
@@ -105,10 +107,13 @@ export const FontSizeSelections = ({
 }) => {
   const standardSizePt = FONT_FAMILY_TO_STANDARD_SIZE_IN_PT[fontFamily];
   const compactSizePt = standardSizePt - 1;
+  const language = useAppSelector(selectLanguage);
+
+  const types = language === 'zh' ? ["紧凑", "标准", "大"] : ["Compact", "Standard", "Large"];
 
   return (
     <SelectionsWrapper>
-      {["Compact", "Standard", "Large"].map((type, idx) => {
+      {types.map((type, idx) => {
         const fontSizePt = String(compactSizePt + idx);
         const isSelected = fontSizePt === selectedFontSize;
         return (
@@ -139,6 +144,7 @@ export const DocumentSizeSelections = ({
   selectedDocumentSize: string;
   handleSettingsChange: (field: GeneralSetting, value: string) => void;
 }) => {
+  const language = useAppSelector(selectLanguage);
   return (
     <SelectionsWrapper>
       {["Letter", "A4"].map((type, idx) => {
@@ -152,7 +158,7 @@ export const DocumentSizeSelections = ({
             <div className="flex flex-col items-center">
               <div>{type}</div>
               <div className="text-xs">
-                {type === "Letter" ? "(US, Canada)" : "(other countries)"}
+                {type === "Letter" ? (language === 'zh' ? "(美国, 加拿大)" : "(US, Canada)") : (language === 'zh' ? "(其他国家)" : "(other countries)")}
               </div>
             </div>
           </Selection>

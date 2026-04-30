@@ -1,11 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "lib/redux/store";
+import {
+  saveStateToLocalStorage,
+  loadStateFromLocalStorage,
+} from "./local-storage";
+import { initialResumeState } from "./resumeSlice";
 
 export interface Settings {
   themeColor: string;
   fontFamily: string;
   fontSize: string;
   documentSize: string;
+  language: "en" | "zh";
   formToShow: {
     workExperiences: boolean;
     educations: boolean;
@@ -33,7 +39,11 @@ export type ShowForm = keyof Settings["formToShow"];
 export type FormWithBulletPoints = keyof Settings["showBulletPoints"];
 export type GeneralSetting = Exclude<
   keyof Settings,
-  "formToShow" | "formToHeading" | "formsOrder" | "showBulletPoints"
+  | "formToShow"
+  | "formToHeading"
+  | "formsOrder"
+  | "showBulletPoints"
+  | "language"
 >;
 
 export const DEFAULT_THEME_COLOR = "#38bdf8"; // sky-400
@@ -46,6 +56,7 @@ export const initialSettings: Settings = {
   fontFamily: DEFAULT_FONT_FAMILY,
   fontSize: DEFAULT_FONT_SIZE,
   documentSize: "Letter",
+  language: "zh",
   formToShow: {
     workExperiences: true,
     educations: true,
@@ -124,6 +135,9 @@ export const settingsSlice = createSlice({
     setSettings: (draft, action: PayloadAction<Settings>) => {
       return action.payload;
     },
+    changeLanguage: (state, action: PayloadAction<"en" | "zh">) => {
+      state.language = action.payload;
+    },
   },
 });
 
@@ -134,10 +148,13 @@ export const {
   changeFormOrder,
   changeShowBulletPoints,
   setSettings,
+  changeLanguage,
 } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
 export const selectThemeColor = (state: RootState) => state.settings.themeColor;
+
+export const selectLanguage = (state: RootState) => state.settings.language;
 
 export const selectFormToShow = (state: RootState) => state.settings.formToShow;
 export const selectShowByForm = (form: ShowForm) => (state: RootState) =>
@@ -157,5 +174,26 @@ export const selectIsLastForm = (form: ShowForm) => (state: RootState) =>
 export const selectShowBulletPoints =
   (form: FormWithBulletPoints) => (state: RootState) =>
     state.settings.showBulletPoints[form];
+
+export const switchLanguageAndState =
+  (newLanguage: "en" | "zh") => (dispatch: any, getState: () => RootState) => {
+    const state = getState();
+    if (state.settings.language === newLanguage) return;
+    saveStateToLocalStorage(state); // Save current
+    const loadedState = loadStateFromLocalStorage(newLanguage);
+    if (loadedState) {
+      // ensure loaded state overrides to new language
+      loadedState.settings.language = newLanguage;
+      dispatch({ type: "REPLACE_STATE", payload: loadedState });
+    } else {
+      dispatch({
+        type: "REPLACE_STATE",
+        payload: {
+          resume: initialResumeState,
+          settings: { ...initialSettings, language: newLanguage },
+        },
+      });
+    }
+  };
 
 export default settingsSlice.reducer;

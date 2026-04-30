@@ -1,6 +1,7 @@
 import "globals.css";
 import { TopNavBar } from "components/TopNavBar";
 import { Analytics } from "@vercel/analytics/react";
+import { ReduxProvider } from "lib/redux/Provider";
 
 export const metadata = {
   title: "OpenResume - Free Open-source Resume Builder and Parser",
@@ -16,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TopNavBar />
-        {children}
+        <ReduxProvider>
+          <TopNavBar />
+          {children}
+        </ReduxProvider>
         <Analytics />
       </body>
     </html>

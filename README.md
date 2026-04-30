@@ -1,3 +1,5 @@
+[English] | [简体中文](README_zh.md)
+
 # OpenResume
 
 OpenResume is a powerful open-source resume builder and resume parser.

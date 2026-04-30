@@ -6,11 +6,13 @@ import { changeCustom, selectCustom } from "lib/redux/resumeSlice";
 import {
   selectShowBulletPoints,
   changeShowBulletPoints,
+  selectLanguage,
 } from "lib/redux/settingsSlice";
 
 export const CustomForm = () => {
   const custom = useAppSelector(selectCustom);
   const dispatch = useAppDispatch();
+  const language = useAppSelector(selectLanguage);
   const { descriptions } = custom;
   const form = "custom";
   const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
@@ -28,10 +30,10 @@ export const CustomForm = () => {
       <div className="col-span-full grid grid-cols-6 gap-3">
         <div className="relative col-span-full">
           <BulletListTextarea
-            label="Custom Textbox"
+            label={language === 'zh' ? '自定义文本框' : 'Custom Textbox'}
             labelClassName="col-span-full"
             name="descriptions"
-            placeholder="Bullet points"
+            placeholder={language === 'zh' ? '要点' : 'Bullet points'}
             value={descriptions}
             onChange={handleCustomChange}
             showBulletPoints={showBulletPoints}

@@ -6,15 +6,17 @@ import {
 import type { CreateHandleChangeArgsWithDescriptions } from "components/ResumeForm/types";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectProjects, changeProjects } from "lib/redux/resumeSlice";
+import { selectLanguage } from "lib/redux/settingsSlice";
 import type { ResumeProject } from "lib/redux/types";
 
 export const ProjectsForm = () => {
   const projects = useAppSelector(selectProjects);
   const dispatch = useAppDispatch();
+  const language = useAppSelector(selectLanguage);
   const showDelete = projects.length > 1;
 
   return (
-    <Form form="projects" addButtonText="Add Project">
+    <Form form="projects" addButtonText={language === 'zh' ? '添加项目' : 'Add Project'}>
       {projects.map(({ project, date, descriptions }, idx) => {
         const handleProjectChange = (
           ...[
@@ -35,11 +37,11 @@ export const ProjectsForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText={"Delete project"}
+            deleteButtonTooltipText={language === 'zh' ? '删除项目' : 'Delete project'}
           >
             <Input
               name="project"
-              label="Project Name"
+              label={language === 'zh' ? '项目名称' : 'Project Name'}
               placeholder="OpenResume"
               value={project}
               onChange={handleProjectChange}
@@ -47,16 +49,16 @@ export const ProjectsForm = () => {
             />
             <Input
               name="date"
-              label="Date"
-              placeholder="Winter 2022"
+              label={language === 'zh' ? '日期' : 'Date'}
+              placeholder={language === 'zh' ? '2022年冬' : 'Winter 2022'}
               value={date}
               onChange={handleProjectChange}
               labelClassName="col-span-2"
             />
             <BulletListTextarea
               name="descriptions"
-              label="Description"
-              placeholder="Bullet points"
+              label={language === 'zh' ? '描述' : 'Description'}
+              placeholder={language === 'zh' ? '要点' : 'Bullet points'}
               value={descriptions}
               onChange={handleProjectChange}
               labelClassName="col-span-full"

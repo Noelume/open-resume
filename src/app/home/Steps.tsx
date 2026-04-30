@@ -1,13 +1,19 @@
-const STEPS = [
-  { title: "Add a resume pdf", text: "or create from scratch" },
-  { title: "Preview design", text: "and make edits" },
-  { title: "Download new resume", text: "and apply with confidence" },
-];
+"use client";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
 
 export const Steps = () => {
+  const language = useAppSelector(selectLanguage);
+
+  const STEPS = [
+    { title: language === "zh" ? "添加简历 PDF" : "Add a resume PDF", text: language === "zh" ? "或从头开始创建" : "or start from scratch" },
+    { title: language === "zh" ? "预览设计" : "Preview design", text: language === "zh" ? "并进行编辑" : "and make edits" },
+    { title: language === "zh" ? "下载新简历" : "Download new resume", text: language === "zh" ? "并充满信心地申请" : "and apply with confidence" },
+  ];
+
   return (
     <section className="mx-auto mt-8 rounded-2xl bg-sky-50 bg-dot px-8 pb-12 pt-10 lg:mt-2">
-      <h1 className="text-center text-3xl font-bold">3 Simple Steps</h1>
+      <h1 className="text-center text-3xl font-bold">{language === "zh" ? "3 个简单步骤" : "3 Simple Steps"}</h1>
       <div className="mt-8 flex justify-center">
         <dl className="flex flex-col gap-y-10 lg:flex-row lg:justify-center lg:gap-x-20">
           {STEPS.map(({ title, text }, idx) => (

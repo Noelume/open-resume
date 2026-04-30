@@ -4,10 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import logoSrc from "public/logo.svg";
 import { cx } from "lib/cx";
+import { LocaleSwitcher } from "components/LocaleSwitcher";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
 
 export const TopNavBar = () => {
   const pathName = usePathname();
   const isHomePage = pathName === "/";
+  const language = useAppSelector(selectLanguage);
 
   return (
     <header
@@ -32,8 +36,8 @@ export const TopNavBar = () => {
           className="flex items-center gap-2 text-sm font-medium"
         >
           {[
-            ["/resume-builder", "Builder"],
-            ["/resume-parser", "Parser"],
+            ["/resume-builder", language === "zh" ? "简历生成器" : "Resume Builder"],
+            ["/resume-parser", language === "zh" ? "简历解析器" : "Resume Parser"],
           ].map(([href, text]) => (
             <Link
               key={text}
@@ -43,6 +47,7 @@ export const TopNavBar = () => {
               {text}
             </Link>
           ))}
+          <LocaleSwitcher />
           <div className="ml-1 mt-1">
             <iframe
               src="https://ghbtns.com/github-btn.html?user=xitanggg&repo=open-resume&type=star&count=true"

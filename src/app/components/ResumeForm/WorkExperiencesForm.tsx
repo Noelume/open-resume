@@ -9,16 +9,18 @@ import {
   changeWorkExperiences,
   selectWorkExperiences,
 } from "lib/redux/resumeSlice";
+import { selectLanguage } from "lib/redux/settingsSlice";
 import type { ResumeWorkExperience } from "lib/redux/types";
 
 export const WorkExperiencesForm = () => {
   const workExperiences = useAppSelector(selectWorkExperiences);
   const dispatch = useAppDispatch();
+  const language = useAppSelector(selectLanguage);
 
   const showDelete = workExperiences.length > 1;
 
   return (
-    <Form form="workExperiences" addButtonText="Add Job">
+    <Form form="workExperiences" addButtonText={language === 'zh' ? '添加工作' : 'Add Job'}>
       {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => {
         const handleWorkExperienceChange = (
           ...[
@@ -42,37 +44,37 @@ export const WorkExperiencesForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText="Delete job"
+            deleteButtonTooltipText={language === 'zh' ? '删除工作' : 'Delete job'}
           >
             <Input
-              label="Company"
+              label={language === 'zh' ? '公司' : 'Company'}
               labelClassName="col-span-full"
               name="company"
-              placeholder="Khan Academy"
+              placeholder={language === 'zh' ? '可汗学院' : 'Khan Academy'}
               value={company}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Job Title"
+              label={language === 'zh' ? '职位' : 'Job Title'}
               labelClassName="col-span-4"
               name="jobTitle"
-              placeholder="Software Engineer"
+              placeholder={language === 'zh' ? '软件工程师' : 'Software Engineer'}
               value={jobTitle}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Date"
+              label={language === 'zh' ? '日期' : 'Date'}
               labelClassName="col-span-2"
               name="date"
-              placeholder="Jun 2022 - Present"
+              placeholder={language === 'zh' ? '2022年6月 - 至今' : 'Jun 2022 - Present'}
               value={date}
               onChange={handleWorkExperienceChange}
             />
             <BulletListTextarea
-              label="Description"
+              label={language === 'zh' ? '描述' : 'Description'}
               labelClassName="col-span-full"
               name="descriptions"
-              placeholder="Bullet points"
+              placeholder={language === 'zh' ? '要点' : 'Bullet points'}
               value={descriptions}
               onChange={handleWorkExperienceChange}
             />

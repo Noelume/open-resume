@@ -3,10 +3,13 @@ import { getHasUsedAppBefore } from "lib/redux/local-storage";
 import { ResumeDropzone } from "components/ResumeDropzone";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
 
 export default function ImportResume() {
   const [hasUsedAppBefore, setHasUsedAppBefore] = useState(false);
   const [hasAddedResume, setHasAddedResume] = useState(false);
+  const language = useAppSelector(selectLanguage);
   const onFileUrlChange = (fileUrl: string) => {
     setHasAddedResume(Boolean(fileUrl));
   };
@@ -21,7 +24,7 @@ export default function ImportResume() {
         {!hasUsedAppBefore ? (
           <>
             <h1 className="text-lg font-semibold text-gray-900">
-              Import data from an existing resume
+              {language === 'zh' ? '从现有简历导入数据' : 'Import data from an existing resume'}
             </h1>
             <ResumeDropzone
               onFileUrlChange={onFileUrlChange}
@@ -31,8 +34,8 @@ export default function ImportResume() {
               <>
                 <OrDivider />
                 <SectionWithHeadingAndCreateButton
-                  heading="Don't have a resume yet?"
-                  buttonText="Create from scratch"
+                  heading={language === 'zh' ? '还没有简历？' : "Don't have a resume yet?"}
+                  buttonText={language === 'zh' ? '从头开始创建' : 'Create from scratch'}
                 />
               </>
             )}
@@ -42,14 +45,14 @@ export default function ImportResume() {
             {!hasAddedResume && (
               <>
                 <SectionWithHeadingAndCreateButton
-                  heading="You have data saved in browser from prior session"
-                  buttonText="Continue where I left off"
+                  heading={language === 'zh' ? '您的浏览器中保存了上次会话的数据' : 'You have data saved in browser from prior session'}
+                  buttonText={language === 'zh' ? '继续上次的进度' : 'Continue where you left off'}
                 />
                 <OrDivider />
               </>
             )}
             <h1 className="font-semibold text-gray-900">
-              Override data with a new resume
+              {language === 'zh' ? '使用新简历覆盖数据' : 'Override data with a new resume'}
             </h1>
             <ResumeDropzone
               onFileUrlChange={onFileUrlChange}
@@ -62,13 +65,16 @@ export default function ImportResume() {
   );
 }
 
-const OrDivider = () => (
-  <div className="mx-[-2.5rem] flex items-center pb-6 pt-8" aria-hidden="true">
-    <div className="flex-grow border-t border-gray-200" />
-    <span className="mx-2 mt-[-2px] flex-shrink text-lg text-gray-400">or</span>
-    <div className="flex-grow border-t border-gray-200" />
-  </div>
-);
+const OrDivider = () => {
+  const language = useAppSelector(selectLanguage);
+  return (
+    <div className="mx-[-2.5rem] flex items-center pb-6 pt-8" aria-hidden="true">
+      <div className="flex-grow border-t border-gray-200" />
+      <span className="mx-2 mt-[-2px] flex-shrink text-lg text-gray-400">{language === 'zh' ? '或' : 'or'}</span>
+      <div className="flex-grow border-t border-gray-200" />
+    </div>
+  );
+};
 
 const SectionWithHeadingAndCreateButton = ({
   heading,

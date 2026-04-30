@@ -11,11 +11,13 @@ import {
   selectShowBulletPoints,
   changeShowBulletPoints,
   selectThemeColor,
+  selectLanguage,
 } from "lib/redux/settingsSlice";
 
 export const SkillsForm = () => {
   const skills = useAppSelector(selectSkills);
   const dispatch = useAppDispatch();
+  const language = useAppSelector(selectLanguage);
   const { featuredSkills, descriptions } = skills;
   const form = "skills";
   const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
@@ -40,10 +42,10 @@ export const SkillsForm = () => {
       <div className="col-span-full grid grid-cols-6 gap-3">
         <div className="relative col-span-full">
           <BulletListTextarea
-            label="Skills List"
+            label={language === 'zh' ? '技能列表' : 'Skills List'}
             labelClassName="col-span-full"
             name="descriptions"
-            placeholder="Bullet points"
+            placeholder={language === 'zh' ? '要点' : 'Bullet points'}
             value={descriptions}
             onChange={handleSkillsChange}
             showBulletPoints={showBulletPoints}
@@ -57,12 +59,11 @@ export const SkillsForm = () => {
         </div>
         <div className="col-span-full mb-4 mt-6 border-t-2 border-dotted border-gray-200" />
         <InputGroupWrapper
-          label="Featured Skills (Optional)"
+          label={language === 'zh' ? '精选技能（可选）' : 'Featured Skills (Optional)'}
           className="col-span-full"
         >
           <p className="mt-2 text-sm font-normal text-gray-600">
-            Featured skills is optional to highlight top skills, with more
-            circles mean higher proficiency.
+            {language === 'zh' ? '精选技能是可选的，用于突出核心技能，圆圈越多表示熟练度越高。' : 'Featured skills are optional to highlight top skills, with circles showing the proficiency.'}
           </p>
         </InputGroupWrapper>
 
@@ -75,7 +76,7 @@ export const SkillsForm = () => {
             setSkillRating={(newSkill, newRating) => {
               handleFeaturedSkillsChange(idx, newSkill, newRating);
             }}
-            placeholder={`Featured Skill ${idx + 1}`}
+            placeholder={language === 'zh' ? `精选技能 ${idx + 1}` : `Featured Skill ${idx + 1}`}
             circleColor={themeColor}
           />
         ))}

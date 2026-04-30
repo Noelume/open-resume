@@ -11,6 +11,7 @@ import {
   changeSettings,
   DEFAULT_THEME_COLOR,
   selectSettings,
+  selectLanguage,
   type GeneralSetting,
 } from "lib/redux/settingsSlice";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
@@ -19,6 +20,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 export const ThemeForm = () => {
   const settings = useAppSelector(selectSettings);
+  const language = useAppSelector(selectLanguage);
   const { fontSize, fontFamily, documentSize } = settings;
   const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
   const dispatch = useAppDispatch();
@@ -33,12 +35,12 @@ export const ThemeForm = () => {
         <div className="flex items-center gap-2">
           <Cog6ToothIcon className="h-6 w-6 text-gray-600" aria-hidden="true" />
           <h1 className="text-lg font-semibold tracking-wide text-gray-900 ">
-            Resume Setting
+            {language === 'zh' ? '简历设置' : 'Resume Setting'}
           </h1>
         </div>
         <div>
           <InlineInput
-            label="Theme Color"
+            label={language === 'zh' ? '主题颜色' : 'Theme Color'}
             name="themeColor"
             value={settings.themeColor}
             placeholder={DEFAULT_THEME_COLOR}
@@ -64,7 +66,7 @@ export const ThemeForm = () => {
           </div>
         </div>
         <div>
-          <InputGroupWrapper label="Font Family" />
+          <InputGroupWrapper label={language === 'zh' ? '字体' : 'Font Family'} />
           <FontFamilySelectionsCSR
             selectedFontFamily={fontFamily}
             themeColor={themeColor}
@@ -73,7 +75,7 @@ export const ThemeForm = () => {
         </div>
         <div>
           <InlineInput
-            label="Font Size (pt)"
+            label={language === 'zh' ? '字体大小 (pt)' : 'Font Size (pt)'}
             name="fontSize"
             value={fontSize}
             placeholder="11"
@@ -87,7 +89,7 @@ export const ThemeForm = () => {
           />
         </div>
         <div>
-          <InputGroupWrapper label="Document Size" />
+          <InputGroupWrapper label={language === 'zh' ? '文档大小' : 'Document Size'} />
           <DocumentSizeSelections
             themeColor={themeColor}
             selectedDocumentSize={documentSize}

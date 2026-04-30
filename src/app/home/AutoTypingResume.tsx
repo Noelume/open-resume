@@ -9,6 +9,9 @@ import { makeObjectCharIterator } from "lib/make-object-char-iterator";
 import { useTailwindBreakpoints } from "lib/hooks/useTailwindBreakpoints";
 import { deepClone } from "lib/deep-clone";
 
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
+
 // countObjectChar(END_HOME_RESUME) -> ~1800 chars
 const INTERVAL_MS = 50; // 20 Intervals Per Second
 const CHARS_PER_INTERVAL = 10;
@@ -20,6 +23,7 @@ const CHARS_PER_INTERVAL = 10;
 const RESET_INTERVAL_MS = 60 * 1000; // 60s
 
 export const AutoTypingResume = () => {
+  const language = useAppSelector(selectLanguage);
   const [resume, setResume] = useState(deepClone(initialResumeState));
   const resumeCharIterator = useRef(
     makeObjectCharIterator(START_HOME_RESUME, END_HOME_RESUME)
@@ -68,12 +72,12 @@ export const AutoTypingResume = () => {
             fontSize: "12",
             formToHeading: {
               workExperiences: resume.workExperiences[0].company
-                ? "WORK EXPERIENCE"
+                ? (language === "zh" ? "工作经验" : "Work Experience")
                 : "",
-              educations: resume.educations[0].school ? "EDUCATION" : "",
-              projects: resume.projects[0].project ? "PROJECT" : "",
-              skills: resume.skills.featuredSkills[0].skill ? "SKILLS" : "",
-              custom: "CUSTOM SECTION",
+              educations: resume.educations[0].school ? (language === "zh" ? "教育背景" : "Education") : "",
+              projects: resume.projects[0].project ? (language === "zh" ? "项目经历" : "Projects") : "",
+              skills: resume.skills.featuredSkills[0].skill ? (language === "zh" ? "技能" : "Skills") : "",
+              custom: language === "zh" ? "自定义部分" : "Custom Section",
             },
           }}
         />

@@ -7,6 +7,8 @@ import {
   TrashIcon,
   ListBulletIcon,
 } from "@heroicons/react/24/outline";
+import { useAppSelector } from "lib/redux/hooks";
+import { selectLanguage } from "lib/redux/settingsSlice";
 
 export const ShowIconButton = ({
   show,
@@ -15,7 +17,8 @@ export const ShowIconButton = ({
   show: boolean;
   setShow: (show: boolean) => void;
 }) => {
-  const tooltipText = show ? "Hide section" : "Show section";
+  const language = useAppSelector(selectLanguage);
+  const tooltipText = show ? (language === 'zh' ? '隐藏部分' : 'Hide section') : (language === 'zh' ? '显示部分' : 'Show section');
   const onClick = () => {
     setShow(!show);
   };
@@ -39,7 +42,8 @@ export const MoveIconButton = ({
   size?: "small" | "medium";
   onClick: (type: MoveIconButtonType) => void;
 }) => {
-  const tooltipText = type === "up" ? "Move up" : "Move down";
+  const language = useAppSelector(selectLanguage);
+  const tooltipText = type === "up" ? (language === 'zh' ? '上移' : 'Move up') : (language === 'zh' ? '下移' : 'Move down');
   const sizeClassName = size === "medium" ? "h-6 w-6" : "h-4 w-4";
   const Icon = type === "up" ? ArrowSmallUpIcon : ArrowSmallDownIcon;
 
@@ -77,9 +81,10 @@ export const BulletListIconButton = ({
   onClick: (newShowBulletPoints: boolean) => void;
   showBulletPoints: boolean;
 }) => {
+  const language = useAppSelector(selectLanguage);
   const tooltipText = showBulletPoints
-    ? "Hide bullet points"
-    : "Show bullet points";
+    ? (language === 'zh' ? '隐藏项目符号' : 'Hide bullet points')
+    : (language === 'zh' ? '显示项目符号' : 'Show bullet points');
 
   return (
     <IconButton

@@ -11,17 +11,19 @@ import type { ResumeEducation } from "lib/redux/types";
 import {
   changeShowBulletPoints,
   selectShowBulletPoints,
+  selectLanguage,
 } from "lib/redux/settingsSlice";
 
 export const EducationsForm = () => {
   const educations = useAppSelector(selectEducations);
   const dispatch = useAppDispatch();
+  const language = useAppSelector(selectLanguage);
   const showDelete = educations.length > 1;
   const form = "educations";
   const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
 
   return (
-    <Form form={form} addButtonText="Add School">
+    <Form form={form} addButtonText={language === 'zh' ? '添加学校' : 'Add School'}>
       {educations.map(({ school, degree, gpa, date, descriptions }, idx) => {
         const handleEducationChange = (
           ...[
@@ -47,29 +49,29 @@ export const EducationsForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText="Delete school"
+            deleteButtonTooltipText={language === 'zh' ? '删除学校' : 'Delete school'}
           >
             <Input
-              label="School"
+              label={language === 'zh' ? '学校' : 'School'}
               labelClassName="col-span-4"
               name="school"
-              placeholder="Cornell University"
+              placeholder={language === 'zh' ? '北京大学' : 'University of Pennsylvania'}
               value={school}
               onChange={handleEducationChange}
             />
             <Input
-              label="Date"
+              label={language === 'zh' ? '日期' : 'Date'}
               labelClassName="col-span-2"
               name="date"
-              placeholder="May 2018"
+              placeholder={language === 'zh' ? '2018年5月' : 'May 2018'}
               value={date}
               onChange={handleEducationChange}
             />
             <Input
-              label="Degree & Major"
+              label={language === 'zh' ? '学位与专业' : 'Degree & Major'}
               labelClassName="col-span-4"
               name="degree"
-              placeholder="Bachelor of Science in Computer Engineering"
+              placeholder={language === 'zh' ? '计算机科学与技术理学学士' : 'Bachelor of Science in Computer Science'}
               value={degree}
               onChange={handleEducationChange}
             />
@@ -83,10 +85,10 @@ export const EducationsForm = () => {
             />
             <div className="relative col-span-full">
               <BulletListTextarea
-                label="Additional Information (Optional)"
+                label={language === 'zh' ? '补充信息（可选）' : 'Additional Information (Optional)'}
                 labelClassName="col-span-full"
                 name="descriptions"
-                placeholder="Free paragraph space to list out additional activities, courses, awards etc"
+                placeholder={language === 'zh' ? '可在此处列出其他活动、课程、奖项等' : 'List additional activities, courses, awards, etc. here'}
                 value={descriptions}
                 onChange={handleEducationChange}
                 showBulletPoints={showBulletPoints}
