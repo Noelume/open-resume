@@ -18,6 +18,8 @@ import {
 import { deepMerge } from "lib/deep-merge";
 import type { Resume } from "lib/redux/types";
 
+const LOCAL_STORAGE_SAVE_DEBOUNCE_MS = 750;
+
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -26,10 +28,33 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
  */
 export const useSaveStateToLocalStorageOnChange = () => {
   useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const flushSave = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = undefined;
+      }
       saveStateToLocalStorage(store.getState());
+    };
+
+    const unsubscribe = store.subscribe(() => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        timeoutId = undefined;
+        saveStateToLocalStorage(store.getState());
+      }, LOCAL_STORAGE_SAVE_DEBOUNCE_MS);
     });
-    return unsubscribe;
+
+    window.addEventListener("beforeunload", flushSave);
+
+    return () => {
+      window.removeEventListener("beforeunload", flushSave);
+      unsubscribe();
+      flushSave();
+    };
   }, []);
 };
 
@@ -55,5 +80,5 @@ export const useSetInitialStore = () => {
       ) as Settings;
       dispatch(setSettings(mergedSettingsState));
     }
-  }, []);
+  }, [dispatch]);
 };

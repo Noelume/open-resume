@@ -20,6 +20,8 @@ export default function ResumeParser() {
   const language = useAppSelector(selectLanguage);
   const [fileUrl, setFileUrl] = useState(defaultFileUrl);
   const [textItems, setTextItems] = useState<TextItems>([]);
+  const [isReadingPdf, setIsReadingPdf] = useState(false);
+  const [readPdfError, setReadPdfError] = useState("");
   const lines = groupTextItemsIntoLines(textItems || []);
   const sections = groupLinesIntoSections(lines);
   const resume = extractResumeFromSections(sections);
@@ -48,11 +50,36 @@ export default function ResumeParser() {
   ];
 
   useEffect(() => {
+    let isActive = true;
+
     async function test() {
-      const textItems = await readPdf(fileUrl);
-      setTextItems(textItems);
+      setIsReadingPdf(true);
+      setReadPdfError("");
+      try {
+        const textItems = await readPdf(fileUrl);
+        if (isActive) {
+          setTextItems(textItems);
+        }
+      } catch (error) {
+        if (isActive) {
+          setTextItems([]);
+          setReadPdfError(
+            error instanceof Error
+              ? error.message
+              : "We could not read this PDF."
+          );
+        }
+      } finally {
+        if (isActive) {
+          setIsReadingPdf(false);
+        }
+      }
     }
     test();
+
+    return () => {
+      isActive = false;
+    };
   }, [fileUrl]);
 
   return (
@@ -120,6 +147,16 @@ export default function ResumeParser() {
                 playgroundView={true}
               />
             </div>
+            {(isReadingPdf || readPdfError) && (
+              <p
+                className={cx(
+                  "mt-3 text-sm",
+                  readPdfError ? "text-red-500" : "text-gray-500"
+                )}
+              >
+                {readPdfError || "Reading PDF..."}
+              </p>
+            )}
             <Heading level={2} className="!mt-[1.2em]">
               {language === "zh" ? "简历解析结果" : "Resume Parsing Results"}
             </Heading>

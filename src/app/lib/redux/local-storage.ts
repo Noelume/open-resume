@@ -5,6 +5,8 @@ import type { RootState } from "lib/redux/store";
 const LOCAL_STORAGE_KEY = "open-resume-state";
 const LOCAL_STORAGE_LANG_KEY = "open-resume-language";
 
+type PersistedState = Pick<RootState, "resume" | "settings">;
+
 export const loadStateFromLocalStorage = (language?: "zh" | "en") => {
   try {
     let targetLanguage = language;
@@ -27,15 +29,19 @@ export const loadStateFromLocalStorage = (language?: "zh" | "en") => {
   }
 };
 
-export const saveStateToLocalStorage = (state: RootState) => {
+export const saveStateToLocalStorage = (state: PersistedState) => {
   try {
     const language = state.settings.language;
     const key = `open-resume-state-${language}`;
-    const stringifiedState = JSON.stringify(state);
+    const stringifiedState = JSON.stringify({
+      resume: state.resume,
+      settings: state.settings,
+    });
     localStorage.setItem(key, stringifiedState);
     localStorage.setItem(LOCAL_STORAGE_LANG_KEY, language);
+    return true;
   } catch (e) {
-    // Ignore
+    return false;
   }
 };
 
